@@ -10,12 +10,15 @@
     "check:ci": "biome ci .",
     "check-types": "turbo run check-types",
     "prepare": "husky",
-    "check:deps": "sherif"
+    "check:deps": "sherif",
+    "commit": "cz"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.14",
     "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^20.5.3",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "sherif": "^1.11.1",
@@ -30,5 +33,10 @@
     "*.{js,ts,jsx,tsx,json,css,md}": [
       "biome check --write --no-errors-on-unmatched"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   }
 }
