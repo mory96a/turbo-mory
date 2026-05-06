@@ -35,6 +35,6 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!packages/db/generated", "!!**/dist", "!!**/build"]
+    "includes": ["**", "!packages/db/src/generated", "!!**/dist", "!!**/build"]
   }
 }
