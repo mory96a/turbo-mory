@@ -12,16 +12,26 @@
  * 🟢 You can import this file directly.
  */
 
-import * as Prisma from './internal/prismaNamespaceBrowser.js';
+import * as Prisma from './internal/prismaNamespaceBrowser.ts';
 
-export * as $Enums from './enums.js';
-export * from './enums.js';
+export * as $Enums from './enums.ts';
+export * from './enums.ts';
 export {Prisma};
 /**
  * Model User
  *
  */
 export type User = Prisma.UserModel;
+/**
+ * Model Session
+ *
+ */
+export type Session = Prisma.SessionModel;
+/**
+ * Model Account
+ *
+ */
+export type Account = Prisma.AccountModel;
 /**
  * Model Article
  *
