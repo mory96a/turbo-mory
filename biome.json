@@ -33,5 +33,8 @@
     "enabled": true,
     "clientKind": "git",
     "useIgnoreFile": true
+  },
+  "files": {
+    "includes": ["**", "!packages/db/generated", "!!**/dist", "!!**/build"]
   }
 }
