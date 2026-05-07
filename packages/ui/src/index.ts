@@ -1,2 +1,7 @@
-export {Button} from './components/ui/button';
+export {Menu as MenuIcon} from 'lucide-react';
+export * from './components/ui/avatar';
+export * from './components/ui/button';
+export * from './components/ui/dropdown-menu';
+export * from './components/ui/sheet';
+export * from './components/ui/VisualyHidden';
 export * from './lib/utils';

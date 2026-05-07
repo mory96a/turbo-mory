@@ -1,3 +1,5 @@
-import {type AuthClient, createClient} from '@repo/auth';
+import {type AuthClient, createClient} from '@repo/auth/client';
 
-export const authClient: AuthClient = createClient();
+const authClient: AuthClient = createClient();
+
+export const {useSession, signIn, signUp, signOut} = authClient;
