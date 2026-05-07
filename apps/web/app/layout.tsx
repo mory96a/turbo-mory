@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import localFont from 'next/font/local';
 
-// import '@repo/ui/globals.css';
+import '@repo/ui/styles';
 import './globals.css';
 
 const geistSans = localFont({

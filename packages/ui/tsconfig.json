@@ -4,7 +4,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@repo/ui/*": ["./src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"],
