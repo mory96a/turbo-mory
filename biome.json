@@ -36,5 +36,10 @@
   },
   "files": {
     "includes": ["**", "!packages/db/src/generated", "!!**/dist", "!!**/build"]
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
   }
 }
