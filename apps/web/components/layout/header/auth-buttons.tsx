@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@repo/ui';
 import Link from 'next/link';
+import {useRouter} from 'next/navigation';
 import {signOut, useSession} from '@/lib/auth/client';
 
 interface AuthButtonsProps {
@@ -17,7 +18,8 @@ interface AuthButtonsProps {
 }
 
 export function AuthButtons({mobile}: AuthButtonsProps) {
-  const {data: session, isPending} = useSession();
+  const router = useRouter();
+  const {data: session, isPending, refetch} = useSession();
 
   if (isPending) {
     return (
@@ -28,6 +30,13 @@ export function AuthButtons({mobile}: AuthButtonsProps) {
   }
 
   if (session?.user) {
+    async function onSignOut() {
+      await signOut();
+
+      refetch();
+      router.replace('/');
+    }
+
     return (
       <div className="flex items-center gap-4">
         <DropdownMenu>
@@ -44,10 +53,7 @@ export function AuthButtons({mobile}: AuthButtonsProps) {
             <DropdownMenuItem asChild>
               <Link href="/dashboard">Dashboard</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => signOut()}
-              className="text-red-600"
-            >
+            <DropdownMenuItem onClick={onSignOut} className="text-red-600">
               Sign Out
             </DropdownMenuItem>
           </DropdownMenuContent>
