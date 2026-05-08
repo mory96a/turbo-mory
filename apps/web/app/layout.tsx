@@ -3,7 +3,6 @@ import localFont from 'next/font/local';
 
 import '@repo/ui/styles';
 import './globals.css';
-import {Header} from '@/components/layout/header';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -27,10 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <div className="flex flex-col h-screen">
-          <Header />
-          <main className="flex-1 overflow-y-auto">{children}</main>
-        </div>
+        {children}
       </body>
     </html>
   );
