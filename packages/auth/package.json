@@ -13,9 +13,6 @@
     }
   },
   "scripts": {
-    "lint": "biome lint .",
-    "format": "biome format --write .",
-    "check": "biome check --write .",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
