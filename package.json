@@ -20,6 +20,7 @@
     "@types/node": "^22.15.3",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
+    "dotenv-cli": "^11.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "sherif": "^1.11.1",
