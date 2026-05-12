@@ -12,6 +12,8 @@ env:
 jobs:
   ci:
     runs-on: builder
+    env:
+      NODE_OPTIONS: "--max-old-space-size=300"
     steps:
       - uses: actions/checkout@v4
 
@@ -38,6 +40,8 @@ jobs:
   cd:
     needs: ci
     runs-on: builder
+    env:
+      NODE_OPTIONS: "--max-old-space-size=300"
     environment: dev
     steps:
       - uses: actions/checkout@v4
@@ -61,6 +65,8 @@ jobs:
   deploy-dev:
     needs: cd
     runs-on: dev-host
+    env:
+      NODE_OPTIONS: "--max-old-space-size=300"
     environment: dev
     steps:
       - name: Deploy affected apps
