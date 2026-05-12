@@ -16,7 +16,8 @@ jobs:
       NODE_OPTIONS: "--max-old-space-size=512"
     steps:
       - uses: actions/checkout@v4
-
+        with:
+         fetch-depth: 0
       - name: Restore Turbo cache
         uses: actions/cache@v4
         with:
@@ -45,6 +46,8 @@ jobs:
     environment: dev
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Get affected apps
         id: affected
