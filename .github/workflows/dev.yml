@@ -4,17 +4,14 @@ on:
 
 env:
   NODE_VERSION: 20
-  BUILDER_RUNNER: builder
-  DEV_RUNNER: dev-host
   CACHE_PATH: .turbo
   APPS_LIST_FILE: /var/tmp/affected-apps.txt
   WEB_PORT: 3000
   ADMIN_PORT: 3001
-  ENVIRONMENT: dev
 
 jobs:
   ci:
-    runs-on: ${{ env.BUILDER_RUNNER }}
+    runs-on: builder
     steps:
       - uses: actions/checkout@v4
 
@@ -38,11 +35,10 @@ jobs:
 
       - name: Type check
         run: pnpm check-types --affected
-
   cd:
     needs: ci
-    runs-on: ${{ env.BUILDER_RUNNER }}
-    environment: ${{ env.ENVIRONMENT }}
+    runs-on: builder
+    environment: dev
     steps:
       - uses: actions/checkout@v4
 
@@ -64,8 +60,8 @@ jobs:
 
   deploy-dev:
     needs: cd
-    runs-on: ${{ env.DEV_RUNNER }}
-    environment: ${{ env.ENVIRONMENT }}
+    runs-on: dev-host
+    environment: dev
     steps:
       - name: Deploy affected apps
         run: |
