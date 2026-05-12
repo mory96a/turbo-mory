@@ -67,9 +67,12 @@ jobs:
       - name: Get affected apps
         id: affected
         run: |
-          AFFECTED=$(pnpm turbo run build --affected --dry-run 2>/dev/null | grep -o 'apps/[^ ]*' | sed 's|apps/||' | sed 's|/.turbo/turbo-build.log||' | sort -u)
+          pnpm turbo run build --affected --dry-run 2>&1
+          AFFECTED=$(pnpm turbo run build --affected --dry-run 2>&1 | grep -o 'apps/[^ ]*' | sed 's|apps/||' | sed 's|/.turbo/turbo-build.log||' | sort -u)
+          echo "AFFECTED: $AFFECTED"
           echo "$AFFECTED" > ${{ env.APPS_LIST_FILE }}
           echo "matrix=$(echo "$AFFECTED" | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+      
 
       - name: Build Docker images
         if: steps.affected.outputs.matrix != ''
