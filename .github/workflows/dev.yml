@@ -38,6 +38,7 @@ jobs:
 
       - name: Type check
         run: pnpm check-types --affected
+
   cd:
     needs: ci
     runs-on: builder
@@ -53,7 +54,15 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Restore Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.CACHE_PATH }}
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-turbo-
+
       - run: corepack enable
+      - run: pnpm install
 
       - name: Get affected apps
         id: affected
@@ -68,7 +77,7 @@ jobs:
           for app in $(echo '${{ steps.affected.outputs.matrix }}' | jq -r '.[]'); do
             docker build --build-arg NEXT_PUBLIC_WEB_URL=${{ vars.NEXT_PUBLIC_WEB_URL }} -t $app:latest -f apps/$app/Dockerfile .
           done
-          
+
   deploy-dev:
     needs: cd
     runs-on: dev-host
