@@ -93,15 +93,14 @@ jobs:
           for app in $(cat ${{ env.APPS_LIST_FILE }}); do
             docker stop $app 2>/dev/null || true
             docker rm $app 2>/dev/null || true
-          
+
             case $app in
               web) PORT=${{ env.WEB_PORT }} ;;
               admin) PORT=${{ env.ADMIN_PORT }} ;;
               api) PORT=${{ env.API_PORT }} ;;
+              *) PORT=3000 ;;
             esac
-          
-            docker run -d --name $app -p $PORT:3000 $app:latest
-          
+
             docker run -d --name $app \
               -p $PORT:3000 \
               -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
