@@ -52,7 +52,11 @@ jobs:
       - name: Get affected apps
         id: affected
         run: |
-          AFFECTED=$(pnpm turbo run build --affected --dry-run 2>&1 | grep -o 'apps/[^ ]*' | sed 's|apps/||' | sed 's|/.turbo/turbo-build.log||' | sort -u)
+          echo "=== Running turbo ==="
+          pnpm turbo run build --affected --dry-run
+          echo "=== Parsing apps ==="
+          AFFECTED=$(pnpm turbo run build --affected --dry-run 2>/dev/null | grep -o 'apps/[^ ]*' | sed 's|apps/||' | sed 's|/.turbo/turbo-build.log||' | sort -u)
+          echo "Affected apps: $AFFECTED"
           echo "$AFFECTED" > ${{ env.APPS_LIST_FILE }}
           echo "matrix=$(echo "$AFFECTED" | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
 
