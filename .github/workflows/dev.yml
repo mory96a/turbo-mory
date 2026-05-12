@@ -57,7 +57,7 @@ jobs:
         if: steps.affected.outputs.matrix != ''
         run: |
           for app in $(echo '${{ steps.affected.outputs.matrix }}' | jq -r '.[]'); do
-             --build-arg \
+            docker build --build-arg \
              NEXT_PUBLIC_WEB_URL=${{ vars.NEXT_PUBLIC_WEB_URL }} \
              -t $app:latest -f apps/$app/Dockerfile .
           done
