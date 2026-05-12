@@ -1,19 +1,34 @@
-name: Dev CI
-
 on:
   push:
     branches: [feat/auth]
 
+env:
+  NODE_VERSION: 20
+  BUILDER_RUNNER: builder
+  DEV_RUNNER: dev-host
+  CACHE_PATH: .turbo
+  APPS_LIST_FILE: /var/tmp/affected-apps.txt
+  WEB_PORT: 3000
+  ADMIN_PORT: 3001
+  ENVIRONMENT: dev
+
 jobs:
   ci:
-    runs-on: self-hosted
+    runs-on: ${{ env.BUILDER_RUNNER }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Restore Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.CACHE_PATH }}
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-turbo-
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
 
       - run: corepack enable
       - run: pnpm install
@@ -23,3 +38,56 @@ jobs:
 
       - name: Type check
         run: pnpm check-types --affected
+
+  cd:
+    needs: ci
+    runs-on: ${{ env.BUILDER_RUNNER }}
+    environment: ${{ env.ENVIRONMENT }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get affected apps
+        id: affected
+        run: |
+          AFFECTED=$(pnpm turbo run build --affected --dry-run 2>&1 | grep -o 'apps/[^ ]*' | sed 's|apps/||' | sed 's|/.turbo/turbo-build.log||' | sort -u)
+          echo "$AFFECTED" > ${{ env.APPS_LIST_FILE }}
+          echo "matrix=$(echo "$AFFECTED" | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker images
+        if: steps.affected.outputs.matrix != ''
+        run: |
+          for app in $(echo '${{ steps.affected.outputs.matrix }}' | jq -r '.[]'); do
+             --build-arg \
+             NEXT_PUBLIC_WEB_URL=${{ vars.NEXT_PUBLIC_WEB_URL }} \
+             -t $app:latest -f apps/$app/Dockerfile .
+          done
+
+  deploy-dev:
+    needs: cd
+    runs-on: ${{ env.DEV_RUNNER }}
+    environment: ${{ env.ENVIRONMENT }}
+    steps:
+      - name: Deploy affected apps
+        run: |
+          for app in $(cat ${{ env.APPS_LIST_FILE }}); do
+            docker stop $app 2>/dev/null || true
+            docker rm $app 2>/dev/null || true
+          
+            case $app in
+              web) PORT=${{ env.WEB_PORT }} ;;
+              admin) PORT=${{ env.ADMIN_PORT }} ;;
+              api) PORT=${{ env.API_PORT }} ;;
+            esac
+          
+            docker run -d --name $app -p $PORT:3000 $app:latest
+          
+            docker run -d --name $app \
+              -p $PORT:3000 \
+              -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
+              -e BETTER_AUTH_URL=${{ vars.BETTER_AUTH_URL }} \
+              -e BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }} \
+              -e NEXT_PUBLIC_WEB_URL=${{ vars.NEXT_PUBLIC_WEB_URL }} \
+              $app:latest
+          done
+
+
