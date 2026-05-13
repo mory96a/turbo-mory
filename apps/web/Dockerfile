@@ -14,6 +14,8 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
+ARG NEXT_PUBLIC_WEB_URL
+ENV NEXT_PUBLIC_WEB_URL=$NEXT_PUBLIC_WEB_URL
 WORKDIR /app
 COPY --from=pruner /app/out/full/ .
 COPY --from=pruner /app/pnpm-lock.yaml ./pnpm-lock.yaml
