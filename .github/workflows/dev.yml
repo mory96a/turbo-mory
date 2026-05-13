@@ -101,13 +101,7 @@ jobs:
               *) PORT=3000 ;;
             esac
 
-            docker run -d --name $app \
-              -p $PORT:3000 \
-              -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
-              -e BETTER_AUTH_URL=${{ vars.BETTER_AUTH_URL }} \
-              -e BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }} \
-              -e NEXT_PUBLIC_WEB_URL=${{ vars.NEXT_PUBLIC_WEB_URL }} \
-              $app:latest
+            docker run -d --name $app -p $PORT:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL }}" -e BETTER_AUTH_URL="${{ vars.BETTER_AUTH_URL }}" -e BETTER_AUTH_SECRET="${{ secrets.BETTER_AUTH_SECRET }}" -e NEXT_PUBLIC_WEB_URL="${{ vars.NEXT_PUBLIC_WEB_URL }}" $app:latest
           done
 
 
