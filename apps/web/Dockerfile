@@ -16,6 +16,7 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 WORKDIR /app
 COPY --from=pruner /app/out/full/ .
+COPY --from=pruner /app/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=installer /app/node_modules ./node_modules
 RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN pnpm install --frozen-lockfile --offline
